@@ -6,6 +6,8 @@ import dbConnect from "./database/dbConfig.js";
 
 dotenv.config();
 
+const app=express();
+
 const port=process.env.PORT
 
 app.use(express.json());
