@@ -1,6 +1,7 @@
 import User from "../Model/userSchema.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import sendEmail from "../Utils/mailer.js";
 
 
 //register
@@ -64,7 +65,7 @@ export const login = async (req, res) => {
         // 4. Send token to frontend
         return res.status(200).json({
             message: "User logged in successfully",
-            token:token
+            token: token
         });
 
     } catch (error) {
@@ -74,17 +75,38 @@ export const login = async (req, res) => {
 
 };
 
-export const forgotPassword = async (req, res) => {
 
-    try {
-        const { email } = req.body;
-          const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ message: "Invalid email" });
-        }
-        
-    } catch (error) {
-        
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Check user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email" });
     }
-}
-        
+
+    // 2. Create token
+    const token = jwt.sign(
+      { _id: user._id },
+      process.env.SECRET_KEY,
+      { expiresIn: "1d" }
+    );
+
+    // 3. Send email
+    await sendEmail(
+      user.email,
+      "Reset Your Password",
+      `Use the link below to reset your password: http://localhost:5173/reset-password/${user._id}/${token}`
+    );
+
+    // 4. success Response
+    return res.status(200).json({ message: "Email sent successfully" });
+
+  } catch (error) {
+      // 4. error Response
+    return res.status(500).json({ message: "Error in sending email" });
+  }
+};
+
+
