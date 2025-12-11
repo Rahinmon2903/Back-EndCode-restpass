@@ -7,25 +7,33 @@ import userRouter from "./Router/userRouter.js";
 
 dotenv.config();
 
-const app=express();
+const app = express();
 
-const port=process.env.PORT
+const port = process.env.PORT
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: [
+        "https://restpass-front-end.vercel.app",
+        "https://restpass-front-jrfmc1laf-rahin-mon-ss-projects.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
+}));
+
 dbConnect();
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.status(200).send("Welcome to my API")
 
 
 })
 
-app.use("/api/auth",userRouter);
+app.use("/api/auth", userRouter);
 
-app.listen(port,()=>{
+app.listen(port, () => {
     console.log("server started");
-    
+
 })
 
 
