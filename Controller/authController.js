@@ -2,6 +2,7 @@ import User from "../Model/userSchema.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import sendEmail from "../Utils/mailer.js";
+import crypto from "crypto"
 
 
 //register
@@ -86,18 +87,18 @@ export const forgotPassword = async (req, res) => {
             return res.status(401).json({ message: "Invalid email" });
         }
 
-        // 2. Create token
-        const token = jwt.sign(
-            { _id: user._id },
-            process.env.SECRET_KEY,
-            { expiresIn: "1d" }
-        );
+       
+
+        //2. Instead of creating token we create randomstring
+       const resetToken = crypto.randomBytes(32).toString("hex");
+       user.resetToken=resetToken
+       await user.save();
 
         // 3. Send email
         await sendEmail(
             user.email,
             "Reset Your Password",
-            `Use the link below to reset your password: http://localhost:5173/reset-password/${user._id}/${token}`
+            `Use the link below to reset your password: http://localhost:5173/reset-password/${user._id}/${resetToken}`
         );
 
         // 4. success Response
@@ -110,38 +111,32 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-    //we are getting it from the url so we use params
   const { id, token } = req.params;
   const { password } = req.body;
 
   try {
-    // 1. Check user
     const user = await User.findById(id);
+    //to check whether the user exist or not
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-
-    // 2. ensure token belongs to this user
-    if (decoded._id !== id) {
-      return res.status(401).json({ message: "Invalid token for this user" });
+    // MATCH RANDOM STRING FROM DB
+    if (user.resetToken !== token) {
+      return res.status(401).json({ message: "Invalid or expired reset link" });
     }
-  // 3. hash password
+
+    // HASH NEW PASSWORD
     const hashPassword = await bcrypt.hash(password, 10);
 
+    // UPDATE PASSWORD & CLEAR TOKEN
+    user.password = hashPassword;
+    user.resetToken = null;
+    await user.save();
 
-// 4. update password
-    await User.findByIdAndUpdate(
-      id,
-      { password: hashPassword },
-      { new: true }
-    );
-    // 5. send success response  
     return res.status(200).json({ message: "Password reset successfully" });
 
   } catch (error) {
-    // 6. send error response
     return res.status(500).json({ message: "Error in reset password" });
   }
 };
