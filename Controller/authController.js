@@ -98,7 +98,7 @@ export const forgotPassword = async (req, res) => {
         await sendEmail(
             user.email,
             "Reset Your Password",
-            `Use the link below to reset your password: http://localhost:5173/reset-password/${user._id}/${resetToken}`
+            `Use the link below to reset your password: https://restpass-front-jrfmc1laf-rahin-mon-ss-projects.vercel.app/reset-password/${user._id}/${resetToken}`
         );
 
         // 4. success Response
