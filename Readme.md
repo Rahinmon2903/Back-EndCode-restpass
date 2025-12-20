@@ -1,209 +1,139 @@
-🔐 Password Reset & Authentication System
+🔐 Password Reset & Authentication System (Backend)
 
-A full-stack password reset system built using React, Node.js, Express, MongoDB, and Nodemailer.
-This project includes:
-
-User Registration
-
-User Login (JWT Authentication)
-
-Forgot Password (Email Verification)
-
-Reset Password (Random Token Stored in DB)
-
-Protected Routing
-
-Fully Responsive UI
+A secure backend authentication and password reset system built with Node.js, Express, MongoDB, and Nodemailer.
+This API handles user registration, login, forgot password, and secure password reset using random tokens stored in the database.
 
 🚀 Tech Stack
-Frontend
-
-React
-
-Tailwind CSS
-
-Axios
-
-React Router
-
-React Toastify
-
-Backend
 
 Node.js
 
-Express
+Express.js
 
 MongoDB + Mongoose
 
-Nodemailer
+JWT (Authentication)
 
-Bcrypt
+Bcrypt (Password hashing)
 
-Crypto
+Nodemailer (Email service)
 
-📌 Features
+Crypto (Random reset tokens)
+
+✨ Features
 ✅ User Registration
 
-Stores hashed password using bcrypt
+Registers new users
 
-Checks if user already exists
+Passwords hashed using bcrypt
 
-Returns success/error response
+Prevents duplicate user creation
 
 ✅ User Login
 
-Verifies email and password
+Verifies email & password
 
 Generates JWT token
 
-Stores token in localStorage
-
-Redirects user to welcome page
+Returns token to frontend
 
 ✅ Forgot Password
 
-User enters email
+Verifies registered email
 
-Backend verifies email
+Generates a 32-byte random token
 
-Generates 32-byte random string using crypto
+Stores reset token in database
 
-Stores reset token in DB
-
-Sends email with password reset link
+Sends reset link via email
 
 ✅ Reset Password
 
-User clicks link from email
+Validates user ID and reset token
 
-Page loads with id and token
+Allows setting a new password
 
-Backend verifies token from DB
+Hashes and updates password
 
-Allows user to set a new password
-
-Clears reset token from DB
-
-Password updated securely
+Clears reset token after use (one-time link)
 
 ✅ Security
 
-Passwords hashed with bcrypt
+Encrypted passwords
 
-Tokens stored safely
+Secure token handling
 
-Random string ensures security
+One-time reset links
 
-Reset links are one-time use
+Environment-based secrets
 
-✅ UI
+📂 Folder Structure
+backend/
+├── Controller/
+│   └── authController.js
+├── Router/
+│   └── userRouter.js
+├── Model/
+│   └── userSchema.js
+├── Utils/
+│   └── mailer.js
+├── database/
+│   └── dbConfig.js
+├── index.js
+└── .env
 
-Clean, minimal design inspired by ZARA
+⚙️ Environment Variables
 
-Fully responsive
+Create a .env file in the backend root:
 
-Form validation
-
-Toast notifications
-
-🗂️ Folder Structure
-project/
-│
-├── backend/
-│   ├── Controller/
-│   │   └── authController.js
-│   ├── Router/
-│   │   └── userRouter.js
-│   ├── Model/
-│   │   └── userSchema.js
-│   ├── Utils/
-│   │   └── mailer.js
-│   ├── database/
-│   │   └── dbConfig.js
-│   ├── server.js
-│   └── .env
-│
-└── frontend/
-    ├── src/
-    │   ├── Pages/
-    │   │   ├── Register.jsx
-    │   │   ├── Login.jsx
-    │   │   ├── ForgotPassword.jsx
-    │   │   ├── ResetPassword.jsx
-    │   │   └── Welcome.jsx
-    │   ├── Service/api.js
-    │   └── App.jsx
-    └── package.json
-
-⚙️ Backend Setup
-1. Install dependencies
-npm install
-
-2. Configure environment variables
-
-Create .env file:
-
-MONGO_URL=your_mongodb_url
-PASS_MAIL=your_email@gmail.com
-PASS_KEY=your_app_password
-SECRET_KEY=your_jwt_secret
 PORT=5000
+MONGO_URL=your_mongodb_url
+SECRET_KEY=your_jwt_secret
+PASS_MAIL=your_email@gmail.com
+PASS_KEY=your_email_app_password
 
-3. Start the backend
-npm start
-
-🎨 Frontend Setup
-1. Install dependencies
+▶️ Backend Setup
+1️⃣ Install dependencies
 npm install
 
-2. Run frontend
+2️⃣ Start the server
 npm start
+
+
+Server runs at:
+
+http://localhost:5000
 
 🔗 API Endpoints
 Method	Endpoint	Description
-POST	/api/auth/register	Create new user
+POST	/api/auth/register	Register new user
 POST	/api/auth/login	Login user
-POST	/api/auth/forgot-password	Send reset email
+POST	/api/auth/forgot-password	Send password reset email
 POST	/api/auth/reset-password/:id/:token	Reset password
-📨 Email Reset Flow
+📨 Password Reset Flow
 
-User enters email
+User submits email
 
-Backend generates random token
+Backend verifies email
 
-Email sent to user:
+Random token generated using crypto
 
-http://localhost:5173/reset-password/:id/:token
+Token stored in database
 
+Reset link emailed to user
 
 User sets new password
 
 Token cleared from DB
 
-🖼️ Screens Included
+Example reset link:
 
-Register Page
-
-Login Page
-
-Forgot Password Page
-
-Reset Password Page
-
-Post-login Welcome Page
+http://localhost:5173/reset-password/:id/:token
 
 🏁 Conclusion
 
-This project demonstrates a complete and secure password reset system using widely-used modern technologies.
-It satisfies all assignment requirements:
+This backend provides a complete, secure, and production-ready authentication system with password reset functionality.
+It fulfills all assignment requirements and follows best security practices.
 
-Random token storage
+👤 Author
 
-Email verification
-
-Token validation
-
-New password update
-
-Clear UI and clean code
+Rahin Mon S
